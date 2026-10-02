@@ -11,7 +11,7 @@ def main():
     print("San Francisco Fire Department Data:")
     print(sf_df.head())
 
-    meteo_df = scrape_meteo_data("2026-09-28", "2026-09-28")
+    meteo_df = scrape_meteo_data("2026-09-28", "2026-09-29")
     print("\nMeteo Data:")
     print(meteo_df.head())
 
