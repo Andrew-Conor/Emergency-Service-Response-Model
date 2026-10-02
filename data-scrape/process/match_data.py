@@ -7,6 +7,6 @@ def match_data(sf_df, meteo_df):
         sf_df,
         meteo_df,
         how="left",
-        left_on=pd.to_datetime(sf_df["received_dttm"].round("h")),
+        left_on=pd.to_datetime(sf_df["received_dttm"]).dt.round("h"),
         right_on="time",
     )
