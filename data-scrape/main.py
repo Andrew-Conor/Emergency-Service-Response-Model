@@ -1,5 +1,5 @@
-from scrape_sf import scrape_sf_data
-from scrape_meteo import scrape_meteo_data
+from scrape.scrape_sf import scrape_sf_data
+from scrape.scrape_meteo import scrape_meteo_data
 
 
 def main():
