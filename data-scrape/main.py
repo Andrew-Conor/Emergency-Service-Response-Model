@@ -11,13 +11,17 @@ def main():
     print("San Francisco Fire Department Data:")
     print(sf_df.head())
 
-    meteo_df = scrape_meteo_data("2026-09-28", "2026-09-29")
+    meteo_df = scrape_meteo_data()
     print("\nMeteo Data:")
     print(meteo_df.head())
 
     merged_df = match_data(sf_df, meteo_df)
     print("\nMerged Data:")
     print(merged_df.head())
+
+    print(merged_df.isna().sum())
+
+    merged_df.to_csv("./csvs/Fire-and-EMS-Response-Data.csv", index=False)
 
 
 if __name__ == "__main__":
