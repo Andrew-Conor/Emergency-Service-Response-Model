@@ -2,3 +2,4 @@ requests
 pandas
 holidays
 numpy
+pylint
