@@ -4,7 +4,7 @@ import pandas as pd
 URL_METEO = 'https://archive-api.open-meteo.com/v1/archive'
 METEO_COLUMNS = 'temperature_2m,rain,snowfall,wind_speed_10m'
 
-def scrape_meteo_data(start_date='2025-09-29', end_date='2026-09-29'):
+def scrape_meteo_data(start_date='2024-09-28', end_date='2026-09-29'):
 
     params = {
         'latitude': 37.7749,
