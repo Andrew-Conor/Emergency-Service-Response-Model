@@ -2,25 +2,23 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 import holidays
+from process.coordinate_ops import match_station
 
 FINAL_COLUMNS = [
-<<<<<<< HEAD
-    'received_dttm', 'call_type_group', 'call_type', 'response_dttm',
-    'on_scene_dttm', 'incident_response_time', 'station_area',
-    'original_priority', 'longitude', 'latitude', 'is_weekend',
-    'is_holiday'
-=======
     "received_dttm",
     "call_type_group",
     "call_type",
     "on_scene_dttm",
     "incident_response_time",
     "station_area",
+    "station_long",
+    "station_lat",
     "original_priority",
     "longitude",
     "latitude",
     "unit_type",
->>>>>>> main
+    "is_weekend",
+    "is_holiday"
 ]
 
 
@@ -74,7 +72,6 @@ def calculate_response_time(received, on_scene):
     on_scene = pd.to_datetime(on_scene)
     return (on_scene - received).dt.total_seconds()
 
-<<<<<<< HEAD
 def is_weekend(dates):
     """ Additional column to check if a given date is the weekend https://www.geeksforgeeks.org/python/ways-to-apply-an-if-condition-in-pandas-dataframe/"""
     dates = pd.to_datetime(dates)
@@ -87,22 +84,17 @@ def is_holiday(dates):
     dates = dates.dt.date
     return np.where(dates.isin(SF_holidays), 1, 0)
     
-=======
-
->>>>>>> main
 def process_sf_data(df):
     df = remove_no_scene_arrivals(df)
     df = keep_only_first_arrival(df)
     df = extract_coordinates(df)
-<<<<<<< HEAD
     df['incident_response_time'] = calculate_response_time(df['received_dttm'], df['on_scene_dttm'])
     df['is_weekend'] = is_weekend(df['received_dttm'])
     df['is_holiday'] = is_holiday(df['received_dttm'])
-=======
     df = handle_missing_values(df)
     df["incident_response_time"] = calculate_response_time(
         df["received_dttm"], df["on_scene_dttm"]
     )
->>>>>>> main
+    match_station(df, df["station_area"])
 
     return df[FINAL_COLUMNS]
