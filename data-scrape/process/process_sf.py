@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 import holidays
-from process.coordinate_ops import match_station
+from process.coordinate_ops import match_station, distance_between_coords
 
 FINAL_COLUMNS = [
     "received_dttm",
@@ -16,6 +16,7 @@ FINAL_COLUMNS = [
     "original_priority",
     "longitude",
     "latitude",
+    "distance_km",
     "unit_type",
     "is_weekend",
     "is_holiday"
@@ -96,5 +97,6 @@ def process_sf_data(df):
         df["received_dttm"], df["on_scene_dttm"]
     )
     match_station(df, df["station_area"])
+    distance_between_coords(df)
 
     return df[FINAL_COLUMNS]
