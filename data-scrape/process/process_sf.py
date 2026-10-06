@@ -11,11 +11,7 @@ FINAL_COLUMNS = [
     "on_scene_dttm",
     "incident_response_time",
     "station_area",
-    "station_long",
-    "station_lat",
     "original_priority",
-    "longitude",
-    "latitude",
     "distance_km",
     "unit_type",
     "is_weekend",
@@ -81,7 +77,8 @@ def is_weekend(dates):
 def is_holiday(dates):
     """ Additional column to check if a given date is a recognised public holiday in california"""
     dates = pd.to_datetime(dates)
-    SF_holidays = holidays.US(state="CA", years=2025, observed=True)
+    years = dates.dt.year.unique().tolist()
+    SF_holidays = holidays.US(state="CA", years=years, observed=True)
     dates = dates.dt.date
     return np.where(dates.isin(SF_holidays), 1, 0)
     
