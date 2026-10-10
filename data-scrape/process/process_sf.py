@@ -15,22 +15,37 @@ FINAL_COLUMNS = [
     "distance_km",
     "unit_type",
     "is_weekend",
-    "is_holiday"
+    "is_holiday",
+    "outcome",
+    "call_number",
+    "unit_id",
+    "incident_number",
+    "call_date",
+    "watch_date",
+    "entry_dttm",
+    "dispatch_dttm",
+    "response_dttm",
+    "transport_dttm",
+    "hospital_dttm",
+    "call_final_disposition",
+    "available_dttm",
+    "address",
+    "city",
+    "zipcode_of_incident",
+    "battalion",
+    "box",
+    "priority",
+    "final_priority",
+    "als_unit",
+    "number_of_alarms",
+    "unit_sequence_in_call_dispatch",
+    "fire_prevention_district",
+    "supervisor_district",
+    "neighborhoods_analysis_boundaries",
+    "rowid",
+    "data_as_of",
+    "data_loaded_at"
 ]
-
-
-def remove_no_scene_arrivals(df):
-    return df[df["on_scene_dttm"].notna()]
-
-
-def keep_only_first_arrival(df):
-    """
-    Each row in SF data is a unit dispatch. Keep only the first unit to arrive per incident.
-    """
-    df = df.sort_values(["incident_number", "on_scene_dttm"], na_position="last")
-    df = df.drop_duplicates(subset="incident_number", keep="first")
-    return df.sort_values("received_dttm", ascending=False)
-
 
 def extract_coordinates(df):
     coords = pd.Series(
@@ -57,13 +72,6 @@ def extract_coordinates(df):
     return df
 
 
-def handle_missing_values(df):
-    df = df.dropna(subset=["longitude", "latitude", "station_area"])
-    df["call_type_group"] = df["call_type_group"].fillna("Unknown")
-    df["original_priority"] = df["original_priority"].fillna("Unknown")
-    return df
-
-
 def calculate_response_time(received, on_scene):
     received = pd.to_datetime(received)
     on_scene = pd.to_datetime(on_scene)
@@ -81,19 +89,20 @@ def is_holiday(dates):
     SF_holidays = holidays.US(state="CA", years=years, observed=True)
     dates = dates.dt.date
     return np.where(dates.isin(SF_holidays), 1, 0)
+
+def outcome(times):
+    return np.where(times.isna(), np.nan, np.where(times > 539, 1, 0))
     
 def process_sf_data(df):
-    df = remove_no_scene_arrivals(df)
-    df = keep_only_first_arrival(df)
     df = extract_coordinates(df)
     df['incident_response_time'] = calculate_response_time(df['received_dttm'], df['on_scene_dttm'])
     df['is_weekend'] = is_weekend(df['received_dttm'])
     df['is_holiday'] = is_holiday(df['received_dttm'])
-    df = handle_missing_values(df)
     df["incident_response_time"] = calculate_response_time(
         df["received_dttm"], df["on_scene_dttm"]
     )
     match_station(df, df["station_area"])
     distance_between_coords(df)
+    df['outcome'] = outcome(df['incident_response_time'])
 
     return df[FINAL_COLUMNS]

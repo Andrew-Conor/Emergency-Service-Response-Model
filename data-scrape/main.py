@@ -21,7 +21,7 @@ def main():
 
     print(merged_df.isna().sum())
 
-    merged_df.to_csv("./csvs/Fire-and-EMS-Response-Data.csv", index=False)
+    merged_df.to_csv("../csvs/Raw-Fire-and-EMS-Response-Data.csv", index=False)
 
 
 if __name__ == "__main__":
