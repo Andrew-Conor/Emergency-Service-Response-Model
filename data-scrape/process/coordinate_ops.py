@@ -63,8 +63,8 @@ def match_station(df, station_area):
 def distance_between_coords(df):
 
     prev_distances = {}
-    if os.path.exists("location_cache.json"):
-        with open("location_cache.json", "r") as f:
+    if os.path.exists("process/loc_cache/location_cache.json"):
+        with open("process/loc_cache/location_cache.json", "r") as f:
             prev_distances = json.load(f)
     else:
         prev_distances = {}
@@ -115,7 +115,7 @@ def distance_between_coords(df):
                     for trip_name, dist in zip(batch['trip_name'], distances_km):
                         prev_distances[trip_name] = dist
 
-                    with open('location_cache.json', "w") as f:
+                    with open('process/loc_cache/location_cache.json', "w") as f:
                             json.dump(prev_distances, f)
                     
                 time.sleep(1)
