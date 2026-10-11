@@ -106,7 +106,7 @@ def get_day_of_week(dates):
 
 
 def outcome(times):
-    return np.where(times.isna(), np.nan, np.where(times > 539, 1, 0))
+    return np.where(times.isna(), np.nan, np.where(times < 539, 1, 0))
 
 
 def process_sf_data(df):
