@@ -12,7 +12,7 @@ def drop_rows(df):
 
 def main():
     df = pd.read_csv(INPUT_PATH)
-    drop_rows(df)
+    df = drop_rows(df)
     df.to_csv(OUTPUT_PATH, index=False)
 
 
