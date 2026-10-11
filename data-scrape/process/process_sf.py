@@ -44,8 +44,11 @@ FINAL_COLUMNS = [
     "neighborhoods_analysis_boundaries",
     "rowid",
     "data_as_of",
-    "data_loaded_at"
+    "data_loaded_at",
+    "hour_of_day",
+    "day_of_week",
 ]
+
 
 def extract_coordinates(df):
     coords = pd.Series(
@@ -77,32 +80,49 @@ def calculate_response_time(received, on_scene):
     on_scene = pd.to_datetime(on_scene)
     return (on_scene - received).dt.total_seconds()
 
+
 def is_weekend(dates):
-    """ Additional column to check if a given date is the weekend https://www.geeksforgeeks.org/python/ways-to-apply-an-if-condition-in-pandas-dataframe/"""
+    """Additional column to check if a given date is the weekend https://www.geeksforgeeks.org/python/ways-to-apply-an-if-condition-in-pandas-dataframe/"""
     dates = pd.to_datetime(dates)
     return np.where(dates.dt.weekday > 4, 1, 0)
 
+
 def is_holiday(dates):
-    """ Additional column to check if a given date is a recognised public holiday in california"""
+    """Additional column to check if a given date is a recognised public holiday in california"""
     dates = pd.to_datetime(dates)
     years = dates.dt.year.unique().tolist()
     SF_holidays = holidays.US(state="CA", years=years, observed=True)
     dates = dates.dt.date
     return np.where(dates.isin(SF_holidays), 1, 0)
 
+
+def get_hour(dates):
+    """Hour of day (0-23) the call was received"""
+    return pd.to_datetime(dates).dt.hour
+
+
+def get_day_of_week(dates):
+    return pd.to_datetime(dates).dt.day_name()
+
+
 def outcome(times):
     return np.where(times.isna(), np.nan, np.where(times > 539, 1, 0))
-    
+
+
 def process_sf_data(df):
     df = extract_coordinates(df)
-    df['incident_response_time'] = calculate_response_time(df['received_dttm'], df['on_scene_dttm'])
-    df['is_weekend'] = is_weekend(df['received_dttm'])
-    df['is_holiday'] = is_holiday(df['received_dttm'])
+    df["incident_response_time"] = calculate_response_time(
+        df["received_dttm"], df["on_scene_dttm"]
+    )
+    df["is_weekend"] = is_weekend(df["received_dttm"])
+    df["is_holiday"] = is_holiday(df["received_dttm"])
+    df["hour_of_day"] = get_hour(df["received_dttm"])
+    df["day_of_week"] = get_day_of_week(df["received_dttm"])
     df["incident_response_time"] = calculate_response_time(
         df["received_dttm"], df["on_scene_dttm"]
     )
     match_station(df, df["station_area"])
     distance_between_coords(df)
-    df['outcome'] = outcome(df['incident_response_time'])
+    df["outcome"] = outcome(df["incident_response_time"])
 
     return df[FINAL_COLUMNS]
