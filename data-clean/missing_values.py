@@ -6,7 +6,7 @@ INPUT_PATH = PROJECT_ROOT / "csvs" / "Low-Relevance-Removed-Fire-and-EMS-Respons
 OUTPUT_PATH = PROJECT_ROOT / "csvs" / "Missing-Values-Handled-Fire-and-EMs-Response-Data.csv"
 
 def drop_rows(df):
-    df = df.dropna(subset=['outcome', 'original_priority', 'station_area', 'neighborhoods_analysis_boundaries', 'distance_km'])
+    df = df.dropna(subset=['outcome', 'original_priority', 'station_area', 'neighborhoods_analysis_boundaries', 'distance_km']).copy()
     df['call_type_group'] = df['call_type_group'].fillna("Unknown")
     return df
 
