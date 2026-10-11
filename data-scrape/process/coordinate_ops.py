@@ -69,7 +69,7 @@ def distance_between_coords(df):
     else:
         prev_distances = {}
 
-    df['trip_name'] = (df['station_lat'].round(4).astype(str) + "," + df['station_long'].round(4).astype(str) + "->" + df['latitude'].round(4).astype(str) + "," + df['longitude'].round(4).astype(str))
+    df['trip_name'] = (df['station_lat'].astype(str) + "," + df['station_long'].astype(str) + "->" + df['latitude'].round(4).astype(str) + "," + df['longitude'].round(4).astype(str))
 
     df['distance_km'] = df['trip_name'].map(prev_distances)
 
