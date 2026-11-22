@@ -162,7 +162,7 @@ def value_counts(df):
 def target_balance(df):
     if "outcome" not in df.columns:
         return
-    section("9. TARGET CLASS BALANCE (outcome: 1 = missed 8:59 target)")
+    section("9. TARGET CLASS BALANCE (outcome: 1 = achieved 8:59 target)")
     counts = df["outcome"].value_counts(dropna=False)
     print(
         pd.DataFrame(
